@@ -1,0 +1,7 @@
+---
+- name: Run JMeter Test
+  hosts: localhost
+  gather_facts: true
+  roles:
+    - testing
+    

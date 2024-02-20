@@ -1,0 +1,127 @@
+---
+- name: Create PV folder
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        name: local-storage
+      provisioner: kubernetes.io/no-provisioner
+      volumeBindingMode: WaitForFirstConsumer
+      parameters:
+        type: pd-standard
+
+- name: Apply Persistent Volume
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: pv001
+        labels:
+          type: local
+      spec:
+        capacity:
+          storage: 50Gi
+        accessModes:
+          - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        hostPath:
+          path: /mnt/data
+
+- name: Create Persistent Volume Claim for MySQL
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: mysql-pv-claim
+        namespace: default
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-storage
+        resources:
+          requests:
+            storage: 20Gi
+
+- name: Create MySQL Deployment
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: mysql-deployment
+        namespace: default
+        labels:
+          app: mysql
+          tier: database
+      spec:
+        selector:
+          matchLabels:
+            app: mysql
+        strategy:
+          type: Recreate
+        template:
+          metadata:
+            labels:
+              app: mysql
+              tier: database
+          spec:
+            containers:
+              - name: laraveldb
+                image: "mysql:latest"
+                env:
+                  - name: MYSQL_ALLOW_EMPTY_PASSWORD
+                    value: "{{ mysql_empty_password}}"
+                  - name: MYSQL_DATABASE
+                    value: "{{ db_database }}"
+                  - name: MYSQL_USER
+                    value: "{{ db_username }}"
+                  - name: MYSQL_PASSWORD
+                    value: "{{ db_password }}"
+                ports:
+                  - containerPort: 3306
+                volumeMounts:
+                  - name: mysql-persistent-storage
+                    mountPath: "/var/lib/mysql"
+            volumes:
+              - name: mysql-persistent-storage
+                persistentVolumeClaim:
+                  claimName: "mysql-pv-claim"
+
+- name: Create MySQL Service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: mysql-service
+        namespace: default
+        labels:
+          app: mysql
+          tier: database
+      spec:
+        type: ClusterIP
+        selector:
+          app: mysql
+        ports:
+          - targetPort: 3306
+            port: 3306
+
+- name: Wait for MySQL Pod to be ready
+  kubernetes.core.k8s_info:
+    kind: Pod
+    label_selectors:
+      - app=mysql
+      - tier=database
+    namespace: default
+    wait: yes
+    wait_sleep: 10
+    wait_timeout: 300

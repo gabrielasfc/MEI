@@ -1,0 +1,75 @@
+---
+- name: Refresh inventory
+  meta: refresh_inventory
+
+# Testes com 1 thread
+- name: num_threads = 1
+  ansible.builtin.set_fact:
+    num_threads: 1
+
+- name: Updating Template - Get Login
+  template: src=templates/test-get-login.jmx dest=./testes/test-get-login.jmx
+
+- name: Execute JMeter Test - Get Login
+  shell: "/opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./testes/test-get-login.jmx -l ./results-get-login-1.out"
+
+- name: Pause for 1 minute
+  ansible.builtin.pause:
+    minutes: 1 
+
+- name: Updating Template - Post Login
+  template: src=templates/test-post-login.jmx dest=./testes/test-post-login.jmx
+
+- name: Execute JMeter Test - Post Login
+  shell: "/opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./testes/test-post-login.jmx -l ./results-post-login-1.out"
+
+- name: Pause for 1 minute
+  ansible.builtin.pause:
+    minutes: 1 
+  
+# Testes com 10 threads
+- name: num_threads = 10
+  ansible.builtin.set_fact:
+    num_threads: 10
+
+- name: Updating Template - Get Login
+  template: src=templates/test-get-login.jmx dest=./testes/test-get-login.jmx
+
+- name: Execute JMeter Test - Get Login
+  shell: "/opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./testes/test-get-login.jmx -l ./results-get-login-10.out"
+
+- name: Pause for 1 minute
+  ansible.builtin.pause:
+    minutes: 1 
+
+- name: Updating Template - Post Login
+  template: src=templates/test-post-login.jmx dest=./testes/test-post-login.jmx
+
+- name: Execute JMeter Test - Post Login
+  shell: "/opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./testes/test-post-login.jmx -l ./results-post-login-10.out"
+
+- name: Pause for 1 minute
+  ansible.builtin.pause:
+    minutes: 1 
+
+# Testes com 100 threads
+- name: num_threads = 100
+  ansible.builtin.set_fact:
+    num_threads: 100
+
+- name: Updating Template - Get Login
+  template: src=templates/test-get-login.jmx dest=./testes/test-get-login.jmx
+
+- name: Execute JMeter Test - Get Login
+  shell: "/opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./testes/test-get-login.jmx -l ./results-get-login-100.out"
+
+- name: Pause for 1 minute
+  ansible.builtin.pause:
+    minutes: 1 
+
+- name: Updating Template - Post Login
+  template: src=templates/test-post-login.jmx dest=./testes/test-post-login.jmx
+
+- name: Execute JMeter Test - Post Login
+  shell: "/opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./testes/test-post-login.jmx -l ./results-post-login-100.out"
+

@@ -1,0 +1,20 @@
+# Playbook to deploy laravel.io and its components
+---
+- name: Deploy db
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - db
+
+- name: Deploy redis
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - redis
+
+- name: Deploy app
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - {role: app }
+    - {role: seed_app, when: "seed_database is defined and seed_database == 'true'" }

@@ -1,0 +1,31 @@
+---
+- name: Seed database 
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: laravelio-db-seed
+        namespace: default
+      spec:
+        ttlSecondsAfterFinished: 100
+        template:
+          spec:
+            containers:
+            - name: laravelio
+              image: "ascngrupo39/laravelio:v3"
+              command: ["php", "artisan", "db:seed", "--force"]
+              env:
+                - name: DB_CONNECTION
+                  value: "{{ db_connection }}"
+                - name: DB_HOST
+                  value: "{{ db_host }}"
+                - name: DB_DATABASE
+                  value: "{{ db_database }}"
+                - name: DB_USERNAME
+                  value: "{{ db_username }}"
+                - name: DB_PASSWORD
+                  value: "{{ db_password }}"
+            restartPolicy: Never
+        backoffLimit: 3

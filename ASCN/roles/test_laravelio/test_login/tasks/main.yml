@@ -1,0 +1,51 @@
+---
+
+- name: Refresh inventory
+  meta: refresh_inventory
+
+- name: Test Login - Get Login page (HTTP GET should return 200)
+  ansible.builtin.uri:
+    url: "http://{{ app_ip }}:{{app_port}}/login"
+    method: GET
+    status_code: 200
+    timeout: 300
+    dest: /tmp/index.html
+  register: result
+
+- name: Test Login - Extract CSRF token
+  shell: cat /tmp/index.html | grep "csrf-token" | sed "s/.* content=\"\(.*\)\".*/\1/"
+  register: parse_res
+
+- set_fact:
+     token: "{{parse_res.stdout_lines[0]}}"
+
+- name: Test Login - Login as testing user (HTTP POST should return 302)
+  ansible.builtin.uri:
+    url: "http://{{ app_ip }}:{{app_port}}/login"
+    method: POST
+    body:
+      username: "testing"
+      password: "password"
+      _token: "{{token}}"
+    body_format: json
+    return_content: true
+    dest: /tmp/login.html
+    status_code: 302
+    timeout: 300
+    headers:
+      Cookie: "{{ result.cookies_string }}"
+      Cache-Control: no-cache
+      Content-Type: 'application/json; charset=UTF-8'
+    validate_certs: false
+  register: login
+
+- name: Test Login - Get User page (HTTP GET should return 200)
+  ansible.builtin.uri:
+    url: "http://{{ app_ip }}:{{app_port}}/user"
+    method: GET
+    status_code: 200
+    follow_redirects: true
+    dest: /tmp/index.html
+    headers:
+      Cookie: "{{ login.set_cookie }}"
+  register: user_page

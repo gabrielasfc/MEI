@@ -1,0 +1,31 @@
+---
+- name: Install JMeter
+  hosts: localhost
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Install unzip (if not present)
+      package:
+        name: unzip
+        state: present
+
+    - name: Download and extract JMeter
+      get_url:
+        url: "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.zip"  # Replace with the latest JMeter version
+        dest: /opt/
+        mode: 0755
+
+    - name: Unzip JMeter
+      command: "unzip -o /opt/apache-jmeter-5.4.1.zip -d /opt/"
+
+    - name: Install Java and update packages
+      command: "apt-get update"
+    
+    - name: Install Java
+      apt:
+        name: "default-jdk"
+        state: latest
+      
+
+      

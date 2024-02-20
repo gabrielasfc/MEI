@@ -1,0 +1,3 @@
+db_connection: mysql 
+db_host: mysql-service
+db_migrate: "true"

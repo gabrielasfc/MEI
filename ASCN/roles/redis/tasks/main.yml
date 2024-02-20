@@ -1,0 +1,58 @@
+---
+- name: Create Redis Deployment
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: redis-deployment
+        namespace: default
+        labels:
+          app: redis
+          tier: application
+      spec:
+        selector:
+          matchLabels:
+            app: redis
+        strategy:
+          type: Recreate
+        template:
+          metadata:
+            labels:
+              app: redis
+              tier: application
+          spec:
+            containers:
+            - name: redis
+              image: redis:latest
+              ports:
+              - containerPort: 6379
+
+
+- name: Expose Redis Service
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: redis
+        namespace: default
+      spec:
+        selector:
+          app: redis
+        ports:
+        - port: 6379
+          targetPort: 6379
+
+- name: Wait for Redis Pod to be ready
+  kubernetes.core.k8s_info:
+    kind: Pod
+    label_selectors:
+      - app=redis
+      - tier=application
+    namespace: default
+    wait: yes
+    wait_sleep: 10
+    wait_timeout: 300

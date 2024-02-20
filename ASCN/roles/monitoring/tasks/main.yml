@@ -1,0 +1,3 @@
+---
+- name: Create a new dashboard
+  shell: 'gcloud monitoring dashboards create --config-from-file="{{ dashboard_config_file }}" --project="{{ gcp_project }}"'

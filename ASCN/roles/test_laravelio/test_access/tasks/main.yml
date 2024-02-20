@@ -1,0 +1,14 @@
+---
+
+- name: Refresh inventory
+  meta: refresh_inventory
+
+- name: Test Access - Check access to App (HTTP GET should return {{app_status_code}})
+  ansible.builtin.uri:
+    url: "http://{{ app_ip }}:{{app_port}}/"
+    method: GET
+    status_code: "{{app_status_code}}"
+  register: result
+  until: result.status == app_status_code
+  retries: 6
+  delay: 30

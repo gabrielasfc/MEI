@@ -1,0 +1,177 @@
+---
+- name: Create Laravel.io Service 
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: laravelio-service
+        namespace: default
+        labels:
+          app: laravelio
+          tier: application
+      spec:
+        type: LoadBalancer  # Use LoadBalancer service type
+        selector:
+          app: laravelio
+        ports:
+          - protocol: TCP 
+            targetPort: 8000
+            port: 80
+
+- name: Wait until IP is defined
+  kubernetes.core.k8s_info:
+    kind: Service
+    name: laravelio-service
+    namespace: default  
+  register: service_info
+  until: service_info.resources[0].status.loadBalancer.ingress[0].ip is defined
+  retries: 30
+  delay: 5
+
+- name: Define app_ip with the external IP
+  set_fact:
+    app_ip: "{{ service_info.resources[0].status.loadBalancer.ingress[0].ip }}"
+
+- name: Change app_ip in inventory file
+  replace:
+    path: inventory/gcp.yml
+    regexp: 'app_ip:.*$'
+    replace: 'app_ip: "{{ app_ip }}"'
+
+
+- name: Create Laravel.io Deployment
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: laravelio-deployment
+        namespace: default
+        labels:
+          app: laravelio
+          tier: application
+      spec: 
+        selector:
+          matchLabels:
+            app: laravelio
+        strategy:
+          type: Recreate
+        template:
+          metadata:
+            labels:
+              app: laravelio
+              tier: application
+          spec:
+            containers:
+            - name: laravelio
+              image: "ascngrupo39/laravelio:v3"
+              env:
+              - name: DB_CONNECTION
+                value: "{{ db_connection }}"
+              - name: DB_HOST
+                value: "{{ db_host }}"
+              - name: DB_DATABASE
+                value: "{{ db_database }}"
+              - name: DB_USERNAME
+                value: "{{ db_username }}" 
+              - name: DB_PASSWORD
+                value: "{{ db_password }}"
+              - name: REDIS_HOST
+                value: "redis"
+              - name: REDIS_PORT
+                value: "6379"
+              - name: SESSION_DRIVER
+                value: "redis"
+              - name: GITHUB_ID
+                value: "{{ github_id }}"
+              - name: GITHUB_SECRET
+                value: "{{ github_secret }}"
+              - name: GITHUB_URL
+                value: "http://{{ app_ip }}:80/auth/github"
+              - name: APP_URL
+                value: "http://{{ app_ip }}:80/"
+              - name: MAIL_MAILER
+                value: "smtp"
+              - name: MAIL_HOST
+                value: "sandbox.smtp.mailtrap.io" 
+              - name: MAIL_PORT
+                value: "2525"
+              - name: MAIL_USERNAME
+                value: "f94eab4636452a"
+              - name: MAIL_PASSWORD
+                value: "43beccc73ae285"
+              ports:
+                - containerPort: 8000
+              resources:
+                requests:
+                  cpu: "250m"  # Solicita 100 milicores de CPU
+  
+- name: Migrations
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: laravelio-migrate
+        namespace: default
+      spec:
+        ttlSecondsAfterFinished: 100
+        template:
+          spec:
+            containers:
+            - name: laravelio
+              image: "ascngrupo39/laravelio:v3"
+              command: ["php", "artisan", "migrate", "--force"]
+              env:
+                - name: DB_CONNECTION
+                  value: "{{ db_connection }}"
+                - name: DB_HOST
+                  value: "{{ db_host }}"
+                - name: DB_DATABASE
+                  value: "{{ db_database }}"
+                - name: DB_USERNAME
+                  value: "{{ db_username }}"
+                - name: DB_PASSWORD
+                  value: "{{ db_password }}"
+            restartPolicy: Never
+        backoffLimit: 3
+
+- name: Auto-scaling
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: autoscaling/v2
+      kind: HorizontalPodAutoscaler
+      metadata:
+        name: laravelio-hpa
+        namespace: default
+      spec:
+        scaleTargetRef:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: laravelio-deployment
+          namespace: default
+        minReplicas: 2  # Número mínimo de réplicas
+        maxReplicas: 6 # Número máximo de réplicas
+        metrics:
+        - type: Resource
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 80 # Escala quando a utilização média de CPU ultrapassa 80%
+
+- name: Wait for Laravelio Pod to be ready
+  kubernetes.core.k8s_info:
+    kind: Pod
+    label_selectors:
+      - app=laravelio
+      - tier=application
+    namespace: default
+    wait: yes
+    wait_sleep: 10
+    wait_timeout: 500

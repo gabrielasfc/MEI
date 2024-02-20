@@ -1,0 +1,34 @@
+---
+
+# Checkpoint #2
+
+- import_playbook: laravelio-deploy.yml
+  vars:
+    seed_database: 'true'
+  tags: ['test1']
+
+- name: Tests
+  hosts: localhost
+  gather_facts: true
+  roles:
+    - { role: test_laravelio/test_access, app_status_code: 200 }
+  tags: ['test2']
+
+- name: Tests
+  hosts: localhost
+  gather_facts: true
+  roles:
+    - { role: test_laravelio/test_login }
+  tags: ['test3']
+
+- import_playbook: laravelio-undeploy.yml
+  vars:
+    delete_data: 'true'
+  tags: ['test4']
+
+- name: Tests
+  hosts: localhost
+  gather_facts: true
+  roles:
+    - { role: test_laravelio/test_access, app_status_code: -1 }
+  tags: ['test5']

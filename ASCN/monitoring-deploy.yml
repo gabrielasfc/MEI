@@ -1,0 +1,7 @@
+# Playbook to deploy monitoring
+---
+- name: Deploy monitoring
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - monitoring

@@ -1,0 +1,100 @@
+- name: Undeploy Laravel.io
+  hosts: localhost
+  tasks:
+    - name: Delete Laravel.io Service
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: laravelio-service
+            namespace: default
+
+    - name: Delete Laravel.io Deployment
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: laravelio-deployment
+            namespace: default
+
+    - name: Delete autoscaling
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: autoscaling/v2
+          kind: HorizontalPodAutoscaler
+          metadata:
+            name: laravelio-hpa
+            namespace: default
+
+    - name: Delete mysql Service
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: mysql-service
+            namespace: default
+
+    - name: Delete mysql Deployment
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: mysql-deployment
+            namespace: default
+
+    - name: Delete Persistent Volume Claim for MySQL
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: v1
+          kind: PersistentVolumeClaim
+          metadata:
+            name: mysql-pv-claim
+            namespace: default
+
+    - name: Delete Persistent Volume
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: v1
+          kind: PersistentVolume
+          metadata:
+            name: pv001
+
+    - name: Delete StorageClass
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: storage.k8s.io/v1
+          kind: StorageClass
+          metadata:
+            name: local-storage
+
+    - name: Delete Redis Service
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: redis
+            namespace: default
+
+    - name: Delete Redis Deployment
+      kubernetes.core.k8s:
+        state: absent
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: redis-deployment
+            namespace: default
