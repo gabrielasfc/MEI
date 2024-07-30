@@ -1,0 +1,85 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Docente {
+  num_mec           String              @id @db.VarChar(45)
+  Prova_has_Docente Prova_has_Docente[]
+}
+
+model Aluno {
+  num_mec          String             @id @db.VarChar(45)
+  Versao_has_Aluno Versao_has_Aluno[]
+  Resposta         Resposta[]
+}
+
+model Prova {
+  id_prova          Int                 @id @default(autoincrement())
+  nome              String              @db.VarChar(45)
+  duracao           Int
+  backtrack         Boolean             @default(false)
+  random            Boolean             @default(false)
+  estado            Int                 @default(0)
+  Prova_has_Docente Prova_has_Docente[]
+  Versao            Versao[]
+}
+
+model Prova_has_Docente {
+  id_prova Int
+  num_mec  String  @db.VarChar(45)
+  Docente  Docente @relation(fields: [num_mec], references: [num_mec])
+  Prova    Prova   @relation(fields: [id_prova], references: [id_prova])
+
+  @@id([id_prova, num_mec])
+}
+
+model Versao_has_Aluno {
+  id_versao     Int
+  num_mec       String @db.VarChar(45)
+  classificacao Float? @default(0.0)
+  estado        Int
+  Aluno         Aluno  @relation(fields: [num_mec], references: [num_mec])
+  Versao        Versao @relation(fields: [id_versao], references: [id_versao])
+
+  @@id([id_versao, num_mec])
+}
+
+model Versao {
+  id_versao        Int                @id @default(autoincrement())
+  id_prova         Int
+  id_sala          String
+  horario          DateTime
+  num_versao       Int
+  Prova            Prova              @relation(fields: [id_prova], references: [id_prova])
+  Questao          Questao[]
+  Versao_has_Aluno Versao_has_Aluno[]
+}
+
+model Questao {
+  id_questao Int        @id @default(autoincrement())
+  tipo       Int
+  imagem     String?    @db.MediumText
+  descricao  String
+  cotacao    Float?
+  id_versao  Int
+  solucao    Json?
+  Versao     Versao     @relation(fields: [id_versao], references: [id_versao])
+  Resposta   Resposta[]
+}
+
+model Resposta {
+  id_resposta Int     @id @default(autoincrement())
+  num_mec     String  @db.VarChar(45)
+  id_questao  Int
+  cotacao     Float?  @default(0.0)
+  resposta    Json?
+  Aluno       Aluno   @relation(fields: [num_mec], references: [num_mec])
+  Questao     Questao @relation(fields: [id_questao], references: [id_questao])
+}

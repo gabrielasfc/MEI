@@ -1,0 +1,1 @@
+module.exports.apigatewayAP = "http://localhost:8070/api";

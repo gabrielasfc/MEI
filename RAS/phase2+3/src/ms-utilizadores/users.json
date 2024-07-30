@@ -1,0 +1,17 @@
+[
+    {"_id": "a1", "name": "Nicholas Marsh", "email": "a1@example.com", "type": 0},
+    {"_id": "a2", "name": "Isabella Daniels", "email": "a2@example.com", "type": 0},
+    {"_id": "a3", "name": "James Bates", "email": "a3@example.com", "type": 0},
+    {"_id": "a4", "name": "Morgan Rice", "email": "a4@example.com", "type": 0},
+    {"_id": "a5", "name": "Michael Brown", "email": "a5@example.com", "type": 0},
+    {"_id": "d1", "name": "JHarley Conway", "email": "d1@example.com", "type": 1},
+    {"_id": "d2", "name": "Demi Baker", "email": "d2@example.com", "type": 1},
+    {"_id": "d3", "name": "Cameron Richards", "email": "d3@example.com", "type": 1},
+    {"_id": "d4", "name": "Danielle Hall", "email": "d4@example.com", "type": 1},
+    {"_id": "d5", "name": "Tyler Powell", "email": "d5@example.com", "type": 1},
+    {"_id": "t1", "name": "Rhys Quinn", "email": "t1@example.com", "type": 2},
+    {"_id": "t2", "name": "Jane Smith", "email": "t2@example.com", "type": 2},
+    {"_id": "t3", "name": "Alex Johnson", "email": "t3@example.com", "type": 2},
+    {"_id": "t4", "name": "Emily Davis", "email": "t4@example.com", "type": 2},
+    {"_id": "t5", "name": "Georgia Oliver", "email": "t5@example.com", "type": 2}
+]

@@ -1,0 +1,222 @@
+openapi: 3.1.0
+info:
+  title: Notification Service - OpenAPI 3.1
+  version: 1.0.0
+servers:
+  - url: http://localhost:8074
+paths:
+  /api/notificacoes:
+    post:
+      tags:
+        - Notificações
+      summary: Create Notifications
+      operationId: notify
+      requestBody:
+        description: Create Notifications
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_POST_Notify'
+            examples:
+
+              requestPOSTNotifyExample:
+                $ref: '#/components/examples/requestPOSTNotifyExample'
+        required: true
+      responses:
+        '204':
+          description: Success
+        '400':
+          description: Invalid Request
+  /api/notificacoes/{mec}:
+    get:
+      tags:
+        - Notificações
+      summary: Get all notifications for a given user
+      operationId: byUserId
+      parameters:
+        - name: mec
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 'PG12345'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+                minItems: 1
+              examples:
+                notificationListExample:
+                  $ref: '#/components/examples/notificationListExample'
+        '400':
+          description: Invalid User Id (mec)
+        '404':
+          description: No notifications found for the User Id (mec)
+  /api/notificacoes/{id}/{read}:
+    put:
+      tags:
+        - Notificações
+      summary: Update the read state of the notification
+      operationId: updateReadState
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '0fb48f5e-01ea-482e-b917-dbd61da0b05f'
+        - name: read
+          in: path
+          required: true
+          schema:
+            type: boolean
+            default: true
+          example: true
+      responses:
+        '204':
+          description: Success
+        '400':
+          description: Invalid input
+        '404':
+          description: No notification found with given id
+  /api/notificacoes/{id}:
+    delete:
+      tags:
+        - Notificações
+      summary: Delete a notification
+      operationId: deleteNotification
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: '0fb48f5e-01ea-482e-b917-dbd61da0b05f'
+      responses:
+        '204':
+          description: Success
+        '404':
+          description: No notification found with given id
+  /api//notificacoes/sendEmail:
+    post:
+      tags:
+        - Notificações
+      summary: Send email to one or multiple receivers
+      operationId: sendEmail
+      requestBody:
+        description: Create Notifications
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_POST_SendEmail'
+            examples:
+              requestPOSTSendEmailExample:
+                $ref: '#/components/examples/requestPOSTSendEmailExample'
+        required: true
+      responses:
+        '204':
+          description: Success
+        '400':
+          description: Invalid input
+components:
+  schemas:
+    Receiver:
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          examples: ["Sr. Exemplo"]
+        email:
+          type: string
+          examples: ["exemplo@email.com"]
+    Email:
+      required:
+        - subject
+        - body
+      properties:
+        subject:
+          type: string
+        body:
+          type: string
+    Notification:
+      required:
+        - id
+        - content
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        creation:
+          type: string
+          format: date-time
+        read:
+          type: boolean
+          default: false
+      examples:
+        - notification:
+          $ref: '#/components/examples/notificationExample'
+    Request_POST_Notify:
+      required:
+        - mecList
+        - message
+      properties:
+        mecList:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          uniqueItems: true
+        message:
+          type: string
+    Request_POST_SendEmail:
+      required:
+        - receiverList
+        - email
+      properties:
+        receiverList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Receiver'
+          minItems: 1
+          uniqueItems: true
+        email:
+          $ref: '#/components/schemas/Email'
+  examples:
+    requestPOSTNotifyExample:
+      value:
+        mecList: ["PG12345", "A987654"]
+        message: 'Há uma nova prova disponível'
+    requestPOSTSendEmailExample:
+      value:
+        receiverList:
+          - name: 'Sr. Exemplo'
+            email: 'exemplo@email.com'
+          - name: 'Sra. Exemplo'
+            email: 'exempla@email.com'
+        email:
+          subject: 'ProbUM: Há uma nova prova disponível'
+          body: '<html><body>Uma nova prova está disponível.</body></html>'
+    notificationExample:
+      value:
+        id: '5e0867b8-9298-446c-a649-915ed561d680'
+        content: 'Há uma nova prova disponível'
+        creation: '2023-11-25T17:32:28Z'
+        read: false
+    notificationListExample:
+      value:
+        - id: '5e0867b8-9298-446c-a649-915ed561d680'
+          content: 'Há uma nova prova disponível'
+          creation: '2023-11-25T17:32:28Z'
+          read: false
+        - id: '0fb48f5e-01ea-482e-b917-dbd61da0b05f'
+          content: 'O resultado da prova 123 já está disponível'
+          creation: '2023-11-25T12:11:33Z'
+          read: true

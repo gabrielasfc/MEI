@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  provas-db:
+    image: mysql:latest
+    container_name: provas-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password123
+      MYSQL_DATABASE: ProbumProvas
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  provas-api:
+    build: .
+    image: provas-api:latest
+    container_name: provas-api
+    environment:
+      DATABASE_URL: mysql://user:password@provas-db:3306/ProbumProvas
+    ports:
+      - "8075:8075"
+    depends_on:
+      - provas-db
+
+  provas-migrate:
+    build: .
+    image: provas-api:latest
+    container_name: provas-migrate
+    depends_on:
+      - provas-db
+    working_dir: /ms-provas/prisma
+    command: npx prisma migrate deploy
+    environment:
+      - DATABASE_URL=mysql://user:password@provas-db:3306/ProbumProvas
+
+volumes:
+  mysql-data:
+

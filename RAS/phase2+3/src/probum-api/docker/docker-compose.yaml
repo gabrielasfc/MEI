@@ -1,0 +1,91 @@
+name: probum_backend
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    env_file:
+      - env/mysql_common.env
+      - env/mysql_server.env
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./init/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - backend
+  mongo:
+    image: mongo:latest
+    container_name: mongo-container
+    env_file:
+      - env/mongo_common.env
+      - env/mongo_server.env
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongo/db:/data/db
+      - ./data/mongo/configdb:/data/configdb
+      - ./init/mongo:/docker-entrypoint-initdb.d
+    networks:
+      - backend
+  ms-notificacoes:
+    image: ms-notificacoes
+    container_name: ms-notificacoes
+    env_file:
+      - env/mongo_common.env
+      - env/ms-notificacoes.env
+    #build: https://github.com/Probum2C/ms-notificacoes/raw/main/Dockerfile
+    build: ../../ms-notificacoes
+    depends_on:
+      - mongo
+    ports:
+      - 8074:8074
+    networks:
+      - backend
+  ms-provas:
+    image: ms-provas
+    container_name: ms-provas
+    env_file:
+      - env/mysql_common.env
+      - env/ms-provas.env
+    #build: https://github.com/Probum2C/ms-provas/raw/main/Dockerfile
+    build: ../../ms-provas
+    depends_on:
+      - mysql
+    ports:
+      - 8075:8075
+    networks:
+      - backend
+  ms-utilizadores:
+    image: ms-utilizadores
+    container_name: ms-utilizadores
+    env_file:
+      - env/mongo_common.env
+      - env/ms-utilizadores.env
+    #build: https://github.com/Probum2C/ms-utilizadores/raw/main/Dockerfile
+    build: ../../ms-utilizadores
+    depends_on:
+      - mongo
+    ports:
+      - 8072:8072
+    networks:
+      - backend
+  ms-salas:
+    image: ms-salas
+    container_name: ms-salas
+    env_file:
+      - env/mongo_common.env
+      - env/ms-salas.env
+    #build: https://github.com/Probum2C/ms-salas/raw/main/Dockerfile
+    build: ../../ms-salas
+    depends_on:
+      - mongo
+    ports:
+      - 8073:8073
+    networks:
+      - backend
+networks:
+  #probum-ui
+  #frontend:
+  #  driver: bridge
+  backend:
+    driver: bridge

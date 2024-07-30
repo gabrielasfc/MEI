@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  notificacoesdb:
+    image: mongo
+    container_name: notificacoesdb
+  notificacoesapi:
+    container_name: notificacoesapi
+    environment:
+      - MONGODB_HOST=notificacoesdb
+      - MONGODB_DATABASE=probum
+    build: .
+    depends_on:
+      - notificacoesdb
+    ports:
+      - 8074:8074

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  probum-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8071:8071"
+    volumes:
+      - .:/app
+    stdin_open: true
+    tty: true
+    restart: unless-stopped

@@ -1,0 +1,27 @@
+version: "3"
+services:
+  utilizadoresapi:
+    container_name: utilizadoresapi
+    build: .
+    ports:
+      - 8072:8072
+    # restart: always
+    environment:
+      - MONGODB_URL=mongodb://mongoserv/probum
+    depends_on:
+      - mongoserv
+    networks:
+      - utilizadoresnet
+
+  mongoserv:
+    container_name: dbutilizadores
+    image: mongo # vai buscar a imagem oficial do mongo
+    networks:
+      - utilizadoresnet
+    # volumes:
+    #   - './mongodata:/data/db'
+
+networks:
+  utilizadoresnet:
+    name: utilizadoresnet
+    driver: bridge

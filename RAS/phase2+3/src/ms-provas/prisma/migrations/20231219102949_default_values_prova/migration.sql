@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Prova`
+    MODIFY `backtrack` BOOLEAN NOT NULL DEFAULT false,
+    MODIFY `random` BOOLEAN NOT NULL DEFAULT false,
+    MODIFY `estado` INTEGER NOT NULL DEFAULT 0;

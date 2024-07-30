@@ -1,0 +1,27 @@
+version: "3"
+services:
+  salasapi:
+    container_name: salasapi
+    build: .
+    ports:
+      - 8073:8073
+    # restart: always
+    environment:
+      - MONGODB_URL=mongodb://mongoserv/SALAS
+    depends_on:
+      - mongoserv
+    networks:
+      - salasnet
+
+  mongoserv:
+    container_name: dbsalas
+    image: mongo # vai buscar a imagem oficial do mongo
+    networks:
+      - salasnet
+    # volumes:
+    #   - './mongodata:/data/db'
+
+networks:
+  salasnet:
+    name: salasnet
+    driver: bridge

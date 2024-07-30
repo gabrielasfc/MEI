@@ -1,0 +1,2 @@
+#Pode não ser necessário
+CREATE USER IF NOT EXISTS 'user'@'localhost' IDENTIFIED BY 'password';
