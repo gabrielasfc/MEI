@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+local.properties
+env.properties
+
+# Android Studio/IntelliJ
+.idea/
+*.iml
+*.hprof
+
+# Android specific
+app/build/
+**/build/
+**/captures/
+
+# Google Services
+*.json
+
+# NDK
+obj/
+*.so
+
+# Log files
+*.log
+
+# macOS specific
+.DS_Store
+

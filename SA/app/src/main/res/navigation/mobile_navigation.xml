@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.elderwatch.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.example.elderwatch.ui.activities.ActivitiesFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_activities" />
+
+    <fragment
+        android:id="@+id/navigation_contacts"
+        android:name="com.example.elderwatch.ui.contacts.ContactsFragment"
+        android:label="@string/title_contacts"
+        tools:layout="@layout/fragment_contacts" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.elderwatch.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/navigation_editprofile"
+        android:name="com.example.elderwatch.ui.settings.EditProfileFragment"
+        android:label="Editar Perfil"
+        tools:layout="@layout/fragment_edit_profile" />
+
+    <fragment
+        android:id="@+id/navigation_editpassword"
+        android:name="com.example.elderwatch.ui.settings.EditPasswordFragment"
+        android:label="Editar Password"
+        tools:layout="@layout/fragment_edit_password" />
+
+    <fragment
+        android:id="@+id/navigation_map_activities"
+        android:name="com.example.elderwatch.ui.activities.MapFragment"
+        android:label="Mapa"
+        tools:layout="@layout/fragment_map_activities">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_map_contacts"
+        android:name="com.example.elderwatch.ui.contacts.MapFragment"
+        android:label="Mapa"
+        tools:layout="@layout/fragment_map_contacts">
+    </fragment>
+
+    <action
+        android:id="@+id/action_settingsFragment_to_editProfileFragment"
+        app:destination="@id/navigation_editprofile" />
+
+    <action
+        android:id="@+id/action_editProfileFragment_to_settingsFragment"
+        app:destination="@id/navigation_settings" />
+
+    <action
+        android:id="@+id/action_settingsFragment_to_editPasswordFragment"
+        app:destination="@id/navigation_editpassword" />
+
+    <action
+        android:id="@+id/action_editPasswordFragment_to_settingsFragment"
+        app:destination="@id/navigation_settings" />
+
+    <action
+        android:id="@+id/action_mapFragment_to_contactsFragment"
+        app:destination="@id/navigation_contacts" />
+
+    <action
+        android:id="@+id/action_mapFragment_to_activitiesFragment"
+        app:destination="@id/navigation_dashboard" />
+
+</navigation>

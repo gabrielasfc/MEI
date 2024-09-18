@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/contentBodyColor">
+
+    <LinearLayout
+        android:id="@+id/contacts_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <Button
+            android:id="@+id/backButton"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="20dp"
+            android:drawableStart="@drawable/ic_arrow"
+            android:drawableTint="@color/black"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="VOLTAR"/>
+
+        <TextView
+            style="@style/viewParent.headerText"
+            android:text="Editar Perfil" />
+
+        <TextView
+            style="@style/viewParent.headerText.settingsMiniTitle"
+            android:text="Email" />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawablePadding="20dp"
+            android:drawableTint="@color/black"
+            android:ems="10"
+            android:hint="Insira o email"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/unselected_color"
+            android:tint="@color/black" />
+
+        <TextView
+            style="@style/viewParent.headerText.settingsMiniTitle"
+            android:text="Nome" />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:drawableLeft="@drawable/ic_name"
+            android:drawablePadding="20dp"
+            android:drawableTint="@color/black"
+            android:ems="10"
+            android:hint="Insira o nome"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/unselected_color"
+            android:tint="@color/black" />
+
+        <TextView
+            style="@style/viewParent.headerText.settingsMiniTitle"
+            android:text="Número de Telemóvel" />
+
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:drawableLeft="@drawable/ic_phone"
+            android:drawablePadding="20dp"
+            android:drawableTint="@color/black"
+            android:ems="10"
+            android:hint="Insira o numero de telemóvel"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/unselected_color"
+            android:tint="@color/black" />
+
+        <Button
+            android:id="@+id/savebtn"
+            android:background="@drawable/outlined_dark_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:drawableLeft="@drawable/ic_check"
+            android:padding="20dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:text="Salvar Alterações" />
+
+    </LinearLayout>
+
+</ScrollView>

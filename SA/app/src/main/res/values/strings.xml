@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ElderWatch</string>
+    <string name="title_settings">Definições</string>
+    <string name="title_home">Início</string>
+    <string name="title_dashboard">Atividade</string>
+    <string name="title_contacts">Contactos</string>
+</resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="15dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
+
+        <TextView
+            android:id="@+id/activity_fall"
+            style="@style/viewParent.headerText"
+            android:layout_marginStart="5dp"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/activity_timestamp"
+            android:layout_below="@id/activity_fall"
+            style="@style/viewParent.headerText"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="7dp"
+            android:textColor="#5D5C5C"
+            android:textSize="16sp" />
+
+        <ImageView
+            style="@style/viewParent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_more" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_below="@id/activity_timestamp"
+            android:layout_marginTop="18dp" />
+
+    </RelativeLayout>
+</LinearLayout>
